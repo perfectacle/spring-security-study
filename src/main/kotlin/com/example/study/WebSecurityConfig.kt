@@ -27,7 +27,7 @@ class WebSecurityConfig {
                 .disable()
                 .logout()
                 .and()
-                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+                .securityContextRepository(WebSessionServerSecurityContextRepositoryFactory.instance)
                 .build()
     }
 
