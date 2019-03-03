@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.server.router
 @Configuration
 class ThymeleafRouter {
     @Bean
-    fun route() = router {
+    fun thymeleafRoute() = router {
         GET("") { ok().render("home") }
         GET("/home") { ok().render("home") }
         GET("/hello") { ok().render("hello") }
