@@ -6,6 +6,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
 
 @EnableWebFluxSecurity
 class WebSecurityConfig {
@@ -26,6 +27,7 @@ class WebSecurityConfig {
                 .disable()
                 .logout()
                 .and()
+                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .build()
     }
 

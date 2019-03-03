@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 @Component
@@ -27,7 +26,7 @@ class LoginHandler(userDetailsService: ReactiveUserDetailsService) {
                                                                                          loginRequest.password))
               }
               .flatMap {
-                  securityContextRepository.save(ServerWebExchange, SecurityContextImpl())
+                  securityContextRepository.save(request.exchange(), SecurityContextImpl())
                   ServerResponse.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(BodyInserters.fromObject(emptyMap<String, Int>()))
               }
               .onErrorResume { ServerResponse.status(HttpStatus.UNAUTHORIZED).contentType(MediaType.APPLICATION_JSON_UTF8).body(BodyInserters.fromObject(emptyMap<String, Int>())) }
