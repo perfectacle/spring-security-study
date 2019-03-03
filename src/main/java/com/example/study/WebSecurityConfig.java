@@ -1,36 +1,36 @@
 package com.example.study;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@Configuration
-@EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/", "/home").permitAll()
-                .anyRequest().authenticated()
+@EnableWebFluxSecurity
+public class WebSecurityConfig {
+    @Bean
+    protected SecurityWebFilterChain springSecurityFilterChain(final ServerHttpSecurity http) {
+        return http
+                .authorizeExchange()
+                .pathMatchers("/", "/home", "/login")
+                .permitAll()
+                .anyExchange()
+                .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .permitAll()
                 .and()
+                .csrf()
+                .disable()
                 .logout()
-                .permitAll();
+                .and()
+                .build();
     }
 
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
+    public MapReactiveUserDetailsService userDetailsService() {
         UserDetails user =
                 User.withDefaultPasswordEncoder()
                         .username("user")
@@ -38,6 +38,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .roles("USER")
                         .build();
 
-        return new InMemoryUserDetailsManager(user);
+        return new MapReactiveUserDetailsService(user);
     }
 }
